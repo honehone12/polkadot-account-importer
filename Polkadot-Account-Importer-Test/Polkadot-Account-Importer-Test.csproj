@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Polkadot_Key_Importer_Test</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\smoldot-sharp\Smoldot-Sharp-JsonRpc\Smoldot-Sharp-JsonRpc\Smoldot-Sharp-JsonRpc.csproj" />
+    <ProjectReference Include="..\Polkadot-Account-Importer\Polkadot-Account-Importer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="sr25519-dotnet.lib">
+      <HintPath>..\..\smoldot-sharp\Smoldot-Sharp-JsonRpc\Smoldot-Sharp-JsonRpc\libs\sr25519-dotnet.lib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
