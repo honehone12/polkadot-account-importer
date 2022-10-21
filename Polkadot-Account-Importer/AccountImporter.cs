@@ -126,7 +126,7 @@ namespace PolkadotAccountImporter
             // private key stored by @polkadot{.js} is actually conveted to ed25519 key.
             // https://github.com/polkadot-js/wasm/blob/master/packages/wasm-crypto/src/rs/sr25519.rs
             // need to re-convert to sr25519 key to sign...
-            // but creating whole JIT conversion signature process as a library
+            // but creating whole JIT signature process as a library
             // like @polkadot{.js} is much better. 
             if (!TryFromEd25519PrivateKey(privateKey))
             {
