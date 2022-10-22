@@ -123,57 +123,12 @@ namespace PolkadotAccountImporter
             pos += DividerLen;
             var publicKey = buffer[pos..(pos + PublicKeyLen)];
 
-            // private key stored by @polkadot{.js} is actually conveted to ed25519 key.
+            // private key stored by @polkadot{.js} is actually not ready to sign.
             // https://github.com/polkadot-js/wasm/blob/master/packages/wasm-crypto/src/rs/sr25519.rs
-            // need to re-convert to sr25519 key to sign...
-            // but creating whole JIT signature process as a library
-            // like @polkadot{.js} is much better. 
-            if (!TryFromEd25519PrivateKey(privateKey))
-            {
-                Debug.Fail("key conversion fail.");
-                return (false, new ImportedAccount());
-            }
+            // we follow @polkadot{.js} and moved conversion process to JIT of sign.
 
             return (true, new ImportedAccount(exportedAccount.address, exportedAccount.meta,
                 publicKey.ToArray(), privateKey.ToArray()));
-        }
-
-        // belowes are from schnorkel.
-        // see https://github.com/w3f/schnorrkel
-
-        static bool TryFromEd25519PrivateKey(Span<byte> privateKey)
-        {
-            if (privateKey.Length != 64)
-            {
-                return false;
-            }
-
-            var key = privateKey[..32];
-            DivideScalarBytesByCofactor(key);
-            return TryMakeScalar(key);
-        }
-
-        static void DivideScalarBytesByCofactor(Span<byte> scalar)
-        {
-            byte low = 0;
-            for (int i = scalar.Length - 1; i >= 0 ; i--)
-            {
-                byte r = (byte)(scalar[i] & 0b0000_0111);
-                scalar[i] >>= 3;
-                scalar[i] += low;
-                low = (byte)(r << 5);
-            }
-        }
-
-        static bool TryMakeScalar(Span<byte> bytes)
-        {
-            if (bytes.Length != 32)
-            {
-                return false;
-            }
-
-            bytes[31] &= 0b0111_1111;
-            return true;
         }
     }
 }
