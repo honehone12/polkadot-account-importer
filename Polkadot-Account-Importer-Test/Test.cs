@@ -25,7 +25,7 @@ namespace PolkadotKeyImporterTest
 
             Console.WriteLine($"Read a file {path}.");
 
-            var pass = Encoding.UTF8.GetBytes("sobashochu");
+            var pass = Encoding.UTF8.GetBytes("YourPassword");
             var bytes = File.ReadAllBytes(path);
             var (ok, account) = AccountImporter.TryImport(bytes, pass);
             Assert(ok);
