@@ -2,6 +2,7 @@
 using System.Text;
 using PolkadotAccountImporter;
 using SmoldotSharp.JsonRpc;
+using sr25519_dotnet.lib;
 
 namespace PolkadotKeyImporterTest
 {
@@ -20,27 +21,18 @@ namespace PolkadotKeyImporterTest
 
         static void Main(string[] args)
         {
-            const string path = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.json";
+            const string path = "MyAccount.json";
 
             Console.WriteLine($"Read a file {path}.");
 
-            var pass = Encoding.UTF8.GetBytes("XXXXXXXXXX");
+            var pass = Encoding.UTF8.GetBytes("sobashochu");
             var bytes = File.ReadAllBytes(path);
             var (ok, account) = AccountImporter.TryImport(bytes, pass);
             Assert(ok);
 
-            var data = Encoding.UTF8.GetBytes("TestDataToSign");
+            var msg = Encoding.UTF8.GetBytes("TestDataToSign");
             (ok, var key) = KeyPair.New(account.GetPublicKey, account.GetPrivateKey);
             Assert(ok);
-
-            Console.WriteLine("pri");
-            var pri = account.GetPrivateKey;
-            for (int i = 0; i < pri.Length; i++)
-            {
-                Console.Write(pri[i]);
-                Console.Write(",");
-            }
-            Console.WriteLine();
 
             Console.WriteLine("pub");
             var pub = account.GetPublicKey;
@@ -51,15 +43,10 @@ namespace PolkadotKeyImporterTest
             }
             Console.WriteLine();
 
-            var sig = Signer.Sign(data, key);
-            var s = sig.GetSignature;
-            Console.WriteLine("sig");
-            for (int i = 0; i < s.Length; i++)
-            {
-                Console.Write(s[i]);
-                Console.Write(",");
-            }
-            Console.WriteLine();
+            var sig = Signer.Sign(msg, key);
+
+            ok = SR25519.Verify(msg, sig.GetSignature.ToArray(), pub);
+            Assert(ok);
         }
     }
 }
